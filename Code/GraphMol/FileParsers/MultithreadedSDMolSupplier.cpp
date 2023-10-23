@@ -14,10 +14,10 @@
 
 namespace RDKit {
 MultithreadedSDMolSupplier::MultithreadedSDMolSupplier(
-    const std::string &fileName, bool sanitize, bool removeHs,
+    zstring_view fileName, bool sanitize, bool removeHs,
     bool strictParsing, unsigned int numWriterThreads, size_t sizeInputQueue,
     size_t sizeOutputQueue) {
-  dp_inStream = openAndCheckStream(fileName);
+  dp_inStream = openAndCheckStream(fileName.c_str());
   initFromSettings(true, sanitize, removeHs, strictParsing, numWriterThreads,
                    sizeInputQueue, sizeOutputQueue);
   POSTCONDITION(dp_inStream, "bad instream");
@@ -68,6 +68,7 @@ void MultithreadedSDMolSupplier::initFromSettings(bool takeOwnership,
 }
 
 MultithreadedSDMolSupplier::~MultithreadedSDMolSupplier() {
+  endThreads();
   if (df_owner && dp_inStream) {
     delete dp_inStream;
     df_owner = false;

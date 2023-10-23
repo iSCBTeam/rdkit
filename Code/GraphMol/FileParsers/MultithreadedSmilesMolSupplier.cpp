@@ -12,11 +12,11 @@
 
 namespace RDKit {
 MultithreadedSmilesMolSupplier::MultithreadedSmilesMolSupplier(
-    const std::string &fileName, const std::string &delimiter, int smilesColumn,
+    zstring_view fileName, std::string_view delimiter, int smilesColumn,
     int nameColumn, bool titleLine, bool sanitize,
     unsigned int numWriterThreads, size_t sizeInputQueue,
     size_t sizeOutputQueue) {
-  dp_inStream = openAndCheckStream(fileName);
+  dp_inStream = openAndCheckStream(fileName.c_str());
   CHECK_INVARIANT(dp_inStream, "bad instream");
   CHECK_INVARIANT(!(dp_inStream->eof()), "early EOF");
   // set df_takeOwnership = true
@@ -27,7 +27,7 @@ MultithreadedSmilesMolSupplier::MultithreadedSmilesMolSupplier(
 }
 
 MultithreadedSmilesMolSupplier::MultithreadedSmilesMolSupplier(
-    std::istream *inStream, bool takeOwnership, const std::string &delimiter,
+    std::istream *inStream, bool takeOwnership, std::string_view delimiter,
     int smilesColumn, int nameColumn, bool titleLine, bool sanitize,
     unsigned int numWriterThreads, size_t sizeInputQueue,
     size_t sizeOutputQueue) {
@@ -48,6 +48,7 @@ MultithreadedSmilesMolSupplier::MultithreadedSmilesMolSupplier() {
 }
 
 MultithreadedSmilesMolSupplier::~MultithreadedSmilesMolSupplier() {
+  endThreads();
   if (df_owner && dp_inStream) {
     delete dp_inStream;
     df_owner = false;
@@ -56,7 +57,7 @@ MultithreadedSmilesMolSupplier::~MultithreadedSmilesMolSupplier() {
 }
 
 void MultithreadedSmilesMolSupplier::initFromSettings(
-    bool takeOwnership, const std::string &delimiter, int smilesColumn,
+    bool takeOwnership, std::string_view delimiter, int smilesColumn,
     int nameColumn, bool titleLine, bool sanitize,
     unsigned int numWriterThreads, size_t sizeInputQueue,
     size_t sizeOutputQueue) {

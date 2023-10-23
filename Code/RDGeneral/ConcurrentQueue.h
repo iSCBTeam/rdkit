@@ -39,7 +39,7 @@ class ConcurrentQueue {
   //! tries to push an element into the queue if it is not full without
   //! modifying the variable element, if the queue is full then pushing an
   //! element will result in blocking
-  void push(const E& element);
+  bool push(const E& element);
 
   //! tries to pop an element from the queue if it is not empty and not done
   //! the boolean value indicates the whether popping is successful, if the
@@ -61,22 +61,23 @@ class ConcurrentQueue {
 };
 
 template <typename E>
-void ConcurrentQueue<E>::push(const E& element) {
+bool ConcurrentQueue<E>::push(const E& element) {
   std::unique_lock<std::mutex> lk(d_lock);
   //! concurrent queue is full so we wait until
   //! it is not full
   while (d_head + d_capacity == d_tail) {
+    if (d_done) {
+      return false;
+    }
     d_notFull.wait(lk);
   }
-  bool wasEmpty = (d_head == d_tail);
+
   d_elements.at(d_tail % d_capacity) = element;
   d_tail++;
-  //! if the concurrent queue was empty before
-  //! then it is not any more since we have "pushed" an element
-  //! thus we notify all the consumer threads
-  if (wasEmpty) {
-    d_notEmpty.notify_all();
-  }
+
+  lk.unlock();
+  d_notEmpty.notify_one();
+  return true;
 }
 
 template <typename E>
@@ -90,15 +91,12 @@ bool ConcurrentQueue<E>::pop(E& element) {
     }
     d_notEmpty.wait(lk);
   }
-  bool wasFull = (d_head + d_capacity == d_tail);
+
   element = d_elements.at(d_head % d_capacity);
   d_head++;
-  //! if the concurrent queue was full before
-  //! then it is not any more since we have "popped" an element
-  //! thus we notify all producer threads
-  if (wasFull) {
-    d_notFull.notify_all();
-  }
+
+  lk.unlock();
+  d_notFull.notify_one();
   return true;
 }
 
@@ -118,6 +116,7 @@ template <typename E>
 void ConcurrentQueue<E>::setDone() {
   std::unique_lock<std::mutex> lk(d_lock);
   d_done = true;
+  lk.unlock();
   d_notEmpty.notify_all();
 }
 
@@ -125,6 +124,10 @@ template <typename E>
 void ConcurrentQueue<E>::clear() {
   std::unique_lock<std::mutex> lk(d_lock);
   d_elements.clear();
+  d_head = 0;
+  d_tail = 0;
+  lk.unlock();
+  d_notFull.notify_all();
 }
 
 }  // namespace RDKit

@@ -37,11 +37,14 @@
 #define RD_REACTIONPARSER_H_21Aug2006
 
 #include <string>
+#include <string_view>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <utility>
 #include <boost/format.hpp>
+#include <GraphMol/RDKitBase.h>
 #include <RDGeneral/BadFileException.h>
 #include <RDGeneral/FileParseException.h>
 
@@ -87,7 +90,7 @@ class RDKIT_CHEMREACTIONS_EXPORT ChemicalReactionParserException
    parsed, otherwise it will be ignored
  */
 RDKIT_CHEMREACTIONS_EXPORT ChemicalReaction *RxnSmartsToChemicalReaction(
-    const std::string &text,
+    std::string_view text,
     std::map<std::string, std::string> *replacements = nullptr,
     bool useSmiles = false, bool allowCXSMILES = true);
 

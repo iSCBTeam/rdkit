@@ -14,6 +14,7 @@
 #include <GraphMol/RWMol.h>
 #include <GraphMol/SanitException.h>
 #include <string>
+#include <string_view>
 #include <exception>
 #include <map>
 
@@ -32,11 +33,11 @@ struct RDKIT_SMILESPARSE_EXPORT SmilesParserParams {
   bool skipCleanup =
       false; /**<  skip the final cleanup stage (for internal use) */
 };
-RDKIT_SMILESPARSE_EXPORT RWMol *SmilesToMol(const std::string &smi,
+RDKIT_SMILESPARSE_EXPORT RWMol *SmilesToMol(std::string_view smi,
                                             const SmilesParserParams &params);
 
-RDKIT_SMILESPARSE_EXPORT Atom *SmilesToAtom(const std::string &smi);
-RDKIT_SMILESPARSE_EXPORT Bond *SmilesToBond(const std::string &smi);
+RDKIT_SMILESPARSE_EXPORT Atom *SmilesToAtom(std::string_view smi);
+RDKIT_SMILESPARSE_EXPORT Bond *SmilesToBond(std::string_view smi);
 
 //! Construct a molecule from a SMILES string
 /*!
@@ -66,7 +67,7 @@ RDKIT_SMILESPARSE_EXPORT Bond *SmilesToBond(const std::string &smi);
 
  */
 inline RWMol *SmilesToMol(
-    const std::string &smi, int debugParse = 0, bool sanitize = true,
+    std::string_view smi, int debugParse = 0, bool sanitize = true,
     std::map<std::string, std::string> *replacements = nullptr) {
   SmilesParserParams params;
   params.debugParse = debugParse;
@@ -94,7 +95,7 @@ struct RDKIT_SMILESPARSE_EXPORT SmartsParserParams {
   bool skipCleanup =
       false; /**<  skip the final cleanup stage (for internal use) */
 };
-RDKIT_SMILESPARSE_EXPORT RWMol *SmartsToMol(const std::string &sma,
+RDKIT_SMILESPARSE_EXPORT RWMol *SmartsToMol(std::string_view sma,
                                             const SmartsParserParams &ps);
 
 //! Construct a molecule from a SMARTS string
@@ -110,7 +111,7 @@ RDKIT_SMILESPARSE_EXPORT RWMol *SmartsToMol(const std::string &sma,
  this.
  */
 inline RWMol *SmartsToMol(
-    const std::string &sma, int debugParse = 0, bool mergeHs = false,
+    std::string_view sma, int debugParse = 0, bool mergeHs = false,
     std::map<std::string, std::string> *replacements = nullptr) {
   SmartsParserParams ps;
   ps.debugParse = debugParse;

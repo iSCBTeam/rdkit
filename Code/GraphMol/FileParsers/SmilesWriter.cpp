@@ -26,9 +26,9 @@
 
 namespace RDKit {
 
-SmilesWriter::SmilesWriter(const std::string &fileName,
-                           const std::string &delimiter,
-                           const std::string &nameHeader, bool includeHeader,
+SmilesWriter::SmilesWriter(zstring_view fileName,
+                           std::string_view delimiter,
+                           std::string_view nameHeader, bool includeHeader,
                            bool isomericSmiles, bool kekuleSmiles) {
   if (fileName != "-") {
     auto *tmpStream = new std::ofstream(fileName.c_str());
@@ -48,8 +48,8 @@ SmilesWriter::SmilesWriter(const std::string &fileName,
              kekuleSmiles);
 }
 
-SmilesWriter::SmilesWriter(std::ostream *outStream, std::string delimiter,
-                           std::string nameHeader, bool includeHeader,
+SmilesWriter::SmilesWriter(std::ostream *outStream, std::string_view delimiter,
+                           std::string_view nameHeader, bool includeHeader,
                            bool takeOwnership, bool isomericSmiles,
                            bool kekuleSmiles) {
   PRECONDITION(outStream, "null stream");
@@ -62,8 +62,8 @@ SmilesWriter::SmilesWriter(std::ostream *outStream, std::string delimiter,
   this->init(delimiter, nameHeader, includeHeader, isomericSmiles,
              kekuleSmiles);
 }
-void SmilesWriter::init(const std::string &delimiter,
-                        const std::string &nameHeader, bool includeHeader,
+void SmilesWriter::init(std::string_view delimiter,
+                        std::string_view nameHeader, bool includeHeader,
                         bool isomericSmiles, bool kekuleSmiles) {
   d_molid = 0;
   d_delim = delimiter;

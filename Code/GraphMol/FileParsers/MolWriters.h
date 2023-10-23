@@ -13,10 +13,12 @@
 #define _RD_MOLWRITERS_H_
 
 #include <RDGeneral/types.h>
+#include <RDGeneral/zstring_view.h>
 
 #include <iostream>
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include <boost/noncopyable.hpp>
 
@@ -68,13 +70,13 @@ class RDKIT_FILEPARSERS_EXPORT SmilesWriter : public MolWriter {
     \param kekuleSmiles   : toggles the generation of kekule SMILES
 
    */
-  SmilesWriter(const std::string &fileName, const std::string &delimiter = " ",
-               const std::string &nameHeader = "Name",
+  SmilesWriter(zstring_view fileName, std::string_view delimiter = " ",
+               std::string_view nameHeader = "Name",
                bool includeHeader = true, bool isomericSmiles = true,
                bool kekuleSmiles = false);
   //! \overload
-  SmilesWriter(std::ostream *outStream, std::string delimiter = " ",
-               std::string nameHeader = "Name", bool includeHeader = true,
+  SmilesWriter(std::ostream *outStream, std::string_view delimiter = " ",
+               std::string_view nameHeader = "Name", bool includeHeader = true,
                bool takeOwnership = false, bool isomericSmiles = true,
                bool kekuleSmiles = false);
 
@@ -119,7 +121,7 @@ class RDKIT_FILEPARSERS_EXPORT SmilesWriter : public MolWriter {
 
  private:
   // local initialization
-  void init(const std::string &delimiter, const std::string &nameHeader,
+  void init(std::string_view delimiter, std::string_view nameHeader,
             bool includeHeader, bool isomericSmiles, bool kekuleSmiles);
 
   // dumps a header line to the output stream
@@ -150,7 +152,7 @@ class RDKIT_FILEPARSERS_EXPORT SDWriter : public MolWriter {
   /*!
     \param fileName       : filename to write to ("-" to write to stdout)
    */
-  SDWriter(const std::string &fileName);
+  SDWriter(zstring_view fileName);
   SDWriter(std::ostream *outStream, bool takeOwnership = false);
 
   ~SDWriter() override;

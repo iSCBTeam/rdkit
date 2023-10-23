@@ -10,6 +10,7 @@
 #ifdef RDK_BUILD_THREADSAFE_SSS
 #ifndef MULTITHREADED_SD_MOL_SUPPLIER
 #define MULTITHREADED_SD_MOL_SUPPLIER
+#include <RDGeneral/zstring_view.h>
 #include "MultithreadedMolSupplier.h"
 namespace RDKit {
 
@@ -19,7 +20,7 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedSDMolSupplier
     : public MultithreadedMolSupplier {
  public:
   explicit MultithreadedSDMolSupplier(
-      const std::string &fileName, bool sanitize = true, bool removeHs = true,
+      zstring_view fileName, bool sanitize = true, bool removeHs = true,
       bool strictParsing = true, unsigned int numWriterThreads = 1,
       size_t sizeInputQueue = 5, size_t sizeOutputQueue = 5);
 

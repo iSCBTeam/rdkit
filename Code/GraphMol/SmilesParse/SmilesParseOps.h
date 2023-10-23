@@ -40,10 +40,10 @@ RDKIT_SMILESPARSE_EXPORT void SetUnspecifiedBondTypes(RDKit::RWMol *mol);
 RDKIT_SMILESPARSE_EXPORT void AdjustAtomChiralityFlags(RDKit::RWMol *mol);
 RDKIT_SMILESPARSE_EXPORT void CleanupAfterParsing(RDKit::RWMol *mol);
 RDKIT_SMILESPARSE_EXPORT void parseCXExtensions(
-    RDKit::RWMol &mol, const std::string &extText,
-    std::string::const_iterator &pos, unsigned int startAtomIdx = 0,
+    RDKit::RWMol &mol, std::string_view extText,
+    std::string_view::const_iterator &pos, unsigned int startAtomIdx = 0,
     unsigned int startBondIdx = 0);
-inline void parseCXExtensions(RDKit::RWMol &mol, const std::string &extText,
+inline void parseCXExtensions(RDKit::RWMol &mol, std::string_view extText,
                               unsigned int startAtomIdx,
                               unsigned int startBondIdx) {
   auto iter = extText.begin();

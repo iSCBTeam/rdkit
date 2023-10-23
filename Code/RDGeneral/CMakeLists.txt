@@ -44,6 +44,7 @@ rdkit_headers(Exceptions.h
               export.h
               test.h
               ConcurrentQueue.h
+              zstring_view.h
               DEST RDGeneral)
 
 if (NOT RDK_INSTALL_INTREE)

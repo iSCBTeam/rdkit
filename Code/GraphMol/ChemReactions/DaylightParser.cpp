@@ -40,6 +40,7 @@
 #include <boost/algorithm/string.hpp>
 #include <vector>
 #include <string>
+#include <string_view>
 #include "ReactionUtils.h"
 
 namespace RDKit {
@@ -137,16 +138,16 @@ void removeSpacesAround(std::string &text, size_t pos) {
 }
 }  // namespace
 ChemicalReaction *RxnSmartsToChemicalReaction(
-    const std::string &origText,
+    std::string_view origText,
     std::map<std::string, std::string> *replacements, bool useSmiles,
     bool allowCXSMILES) {
-  std::string text = origText;
+  std::string text(origText);
   std::string cxPart;
   if (allowCXSMILES) {
-    auto sidx = origText.find_first_of("|");
+    auto sidx = text.find_first_of("|");
     if (sidx != std::string::npos && sidx != 0) {
-      text = origText.substr(0, sidx);
-      cxPart = boost::trim_copy(origText.substr(sidx, origText.size() - sidx));
+      text = text.substr(0, sidx);
+      cxPart = boost::trim_copy(std::string(origText.substr(sidx, origText.size() - sidx)));
     }
   }
   // remove any spaces at the beginning, end, or before the '>'s

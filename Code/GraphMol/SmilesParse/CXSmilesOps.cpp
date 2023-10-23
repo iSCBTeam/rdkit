@@ -1391,7 +1391,7 @@ bool parse_it(Iterator &first, Iterator last, RDKit::RWMol &mol,
   ++first;
   unsigned int nSGroups = 0;
   while (first < last && *first != '|') {
-    typename Iterator::difference_type length = std::distance(first, last);
+    typename std::iterator_traits<Iterator>::difference_type length = std::distance(first, last);
     if (*first == '(') {
       if (!parse_coords(first, last, mol, startAtomIdx)) {
         return false;
@@ -1499,8 +1499,8 @@ bool parse_it(Iterator &first, Iterator last, RDKit::RWMol &mol,
 }
 }  // namespace parser
 
-void parseCXExtensions(RDKit::RWMol &mol, const std::string &extText,
-                       std::string::const_iterator &first,
+void parseCXExtensions(RDKit::RWMol &mol, std::string_view extText,
+                       std::string_view::const_iterator &first,
                        unsigned int startAtomIdx, unsigned int startBondIdx) {
   // BOOST_LOG(rdWarningLog) << "parseCXNExtensions: " << extText << std::endl;
   if (extText.empty()) {

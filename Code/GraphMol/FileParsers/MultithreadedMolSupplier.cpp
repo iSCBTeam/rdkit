@@ -11,20 +11,23 @@
 #include "MultithreadedMolSupplier.h"
 namespace RDKit {
 MultithreadedMolSupplier::~MultithreadedMolSupplier() {
-  endThreads();
-  // destroy all objects in the input queue
-  d_inputQueue->clear();
-  // delete the pointer to the input queue
-  delete d_inputQueue;
-  std::tuple<ROMol*, std::string, unsigned int> r;
-  while (d_outputQueue->pop(r)) {
-    ROMol* m = std::get<0>(r);
-    delete m;
+  if (d_inputQueue) {
+    // destroy all objects in the input queue
+    d_inputQueue->clear();
+    // delete the pointer to the input queue
+    delete d_inputQueue;
   }
-  // destroy all objects in the output queue
-  d_outputQueue->clear();
-  // delete the pointer to the output queue
-  delete d_outputQueue;
+  if (d_outputQueue) {
+    std::tuple<ROMol*, std::string, unsigned int> r;
+    while (d_outputQueue->pop(r)) {
+      ROMol* m = std::get<0>(r);
+      delete m;
+    }
+    // destroy all objects in the output queue
+    d_outputQueue->clear();
+    // delete the pointer to the output queue
+    delete d_outputQueue;
+  }
 }
 
 void MultithreadedMolSupplier::reader() {
@@ -73,9 +76,13 @@ ROMol* MultithreadedMolSupplier::next() {
 }
 
 void MultithreadedMolSupplier::endThreads() {
-  d_readerThread.join();
+  if (d_readerThread.joinable()) {
+    d_readerThread.join();
+  }
   for (auto& thread : d_writerThreads) {
-    thread.join();
+    if (thread.joinable()) {
+      thread.join();
+    }
   }
 }
 

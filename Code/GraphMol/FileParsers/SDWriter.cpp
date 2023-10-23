@@ -26,7 +26,7 @@
 #include "FileParsers.h"
 
 namespace RDKit {
-SDWriter::SDWriter(const std::string &fileName) {
+SDWriter::SDWriter(zstring_view fileName) {
   if (fileName != "-") {
     auto *tmpStream = new std::ofstream(fileName.c_str());
     df_owner = true;

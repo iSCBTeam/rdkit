@@ -21,6 +21,7 @@
 
 #include <atomic>
 #include <boost/tokenizer.hpp>
+#include <boost/lockfree/queue.hpp>
 
 #include "FileParsers.h"
 #include "MolSupplier.h"
@@ -32,7 +33,7 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedMolSupplier : public MolSupplier {
   //! this is an abstract base class to concurrently supply molecules one at a
   //! time
  public:
-  MultithreadedMolSupplier() {}
+  MultithreadedMolSupplier() = default;
   ~MultithreadedMolSupplier() override;
   //! pop elements from the output queue
   ROMol *next() override;
@@ -53,6 +54,8 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedMolSupplier : public MolSupplier {
  protected:
   //! starts reader and writer threads
   void startThreads();
+  //! finalizes the reader and writer threads
+  void endThreads();
 
  private:
   //! reads lines from input stream to populate the input queue
@@ -60,8 +63,6 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedMolSupplier : public MolSupplier {
   //! parses lines from the input queue converting them to ROMol objects
   //! populating the output queue
   void writer();
-  //! finalizes the reader and writer threads
-  void endThreads();
   //! disable automatic copy constructors and assignment operators
   //! for this class and its subclasses.  They will likely be
   //! carrying around stream pointers and copying those is a recipe
@@ -94,9 +95,9 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedMolSupplier : public MolSupplier {
   size_t d_sizeOutputQueue;                  //!< size of output queue
 
   ConcurrentQueue<std::tuple<std::string, unsigned int, unsigned int>>
-      *d_inputQueue;  //!< concurrent input queue
+      *d_inputQueue = nullptr;  //!< concurrent input queue
   ConcurrentQueue<std::tuple<ROMol *, std::string, unsigned int>>
-      *d_outputQueue;  //!< concurrent output queue
+      *d_outputQueue = nullptr;  //!< concurrent output queue
 };
 }  // namespace RDKit
 #endif

@@ -10,6 +10,8 @@
 #ifdef RDK_BUILD_THREADSAFE_SSS
 #ifndef MULTITHREADED_SMILES_MOL_SUPPLIER
 #define MULTITHREADED_SMILES_MOL_SUPPLIER
+#include <string_view>
+#include <RDGeneral/zstring_view.h>
 #include "MultithreadedMolSupplier.h"
 namespace RDKit {
 //! This class is still a bit experimental and the public API may change
@@ -18,14 +20,14 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedSmilesMolSupplier
     : public MultithreadedMolSupplier {
  public:
   explicit MultithreadedSmilesMolSupplier(
-      const std::string &fileName, const std::string &delimiter = " \t",
+      zstring_view fileName, std::string_view delimiter = " \t",
       int smilesColumn = 0, int nameColumn = 1, bool titleLine = true,
       bool sanitize = true, unsigned int numWriterThreads = 1,
       size_t sizeInputQueue = 5, size_t sizeOutputQueue = 5);
 
   explicit MultithreadedSmilesMolSupplier(
       std::istream *inStream, bool takeOwnership = true,
-      const std::string &delimiter = " \t", int smilesColumn = 0,
+      std::string_view delimiter = " \t", int smilesColumn = 0,
       int nameColumn = 1, bool titleLine = true, bool sanitize = true,
       unsigned int numWriterThreads = 1, size_t sizeInputQueue = 5,
       size_t sizeOutputQueue = 5);
@@ -45,7 +47,7 @@ class RDKIT_FILEPARSERS_EXPORT MultithreadedSmilesMolSupplier
                                unsigned int lineNum) override;
 
  private:
-  void initFromSettings(bool takeOwnership, const std::string &delimiter,
+  void initFromSettings(bool takeOwnership, std::string_view delimiter,
                         int smilesColumn, int nameColumn, bool titleLine,
                         bool sanitize, unsigned int numWriterThreads,
                         size_t sizeInputQueue, size_t sizeOutputQueue);

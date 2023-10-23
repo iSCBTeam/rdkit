@@ -69,6 +69,9 @@ option(RDK_BUILD_FUZZ_TARGETS "build the fuzz targets" OFF)
 option(RDK_BUILD_MINIMAL_LIB_RXN "build support for reactions into MinimalLib" ON )
 option(RDK_BUILD_MINIMAL_LIB_SUBSTRUCTLIBRARY "build support for SubstructLibrary into MinimalLib" ON )
 option(RDK_BUILD_MINIMAL_LIB_MCS "build support for MCS into MinimalLib" OFF )
+option(RDK_PACKAGE_TGZ "generate a TGZ package" ON)
+option(RDK_PACKAGE_DEB "generate a DEB package" ON)
+option(RDK_PACKAGE_RPM "generate a RPM package" ON)
 
 set(RDK_BOOST_VERSION "1.58.0")
 
@@ -617,7 +620,17 @@ FIND_PROGRAM(MEMORYCHECK_COMMAND valgrind)
 CONFIGURE_FILE(CTestCustom.ctest.in ${RDKit_BINARY_DIR}/CTestCustom.ctest)
 
 # Packaging
-SET(CPACK_GENERATOR "TGZ;DEB;RPM")
+SET(CPACK_GENERATOR "")
+if(RDK_PACKAGE_TGZ)
+    LIST(APPEND CPACK_GENERATOR "TGZ")
+endif()
+if(RDK_PACKAGE_DEB)
+    LIST(APPEND CPACK_GENERATOR "DEB")
+endif()
+if(RDK_PACKAGE_RPM)
+    LIST(APPEND CPACK_GENERATOR "RPM")
+endif()
+
 SET(CPACK_RPM_COMPONENT_INSTALL ON)
 SET(CPACK_DEB_COMPONENT_INSTALL ON)
 SET(CPACK_MONOLITHIC_INSTALL OFF)
